@@ -1,0 +1,52 @@
+{
+  "name": "Service",
+  "type": "object",
+  "properties": {
+    "name": {
+      "type": "string",
+      "description": "Service name"
+    },
+    "category": {
+      "type": "string",
+      "enum": [
+        "Nails",
+        "Esthetics",
+        "Lashes",
+        "Brows",
+        "Waxing",
+        "Facials"
+      ],
+      "description": "Service category"
+    },
+    "description": {
+      "type": "string"
+    },
+    "duration_minutes": {
+      "type": "number",
+      "description": "Duration in minutes"
+    },
+    "price": {
+      "type": "number"
+    },
+    "image_url": {
+      "type": "string"
+    },
+    "is_active": {
+      "type": "boolean",
+      "default": true
+    },
+    "staff_ids": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "Staff who offer this service"
+    }
+  },
+  "required": [
+    "name",
+    "category",
+    "duration_minutes",
+    "price"
+  ]
+}

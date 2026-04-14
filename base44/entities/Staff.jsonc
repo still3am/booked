@@ -1,0 +1,37 @@
+{
+  "name": "Staff",
+  "type": "object",
+  "properties": {
+    "name": {
+      "type": "string"
+    },
+    "title": {
+      "type": "string",
+      "description": "e.g. Nail Technician, Esthetician"
+    },
+    "bio": {
+      "type": "string"
+    },
+    "photo_url": {
+      "type": "string"
+    },
+    "specialties": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "is_active": {
+      "type": "boolean",
+      "default": true
+    },
+    "working_hours": {
+      "type": "object",
+      "description": "Days and hours e.g. { monday: { start: '09:00', end: '17:00', available: true } }"
+    }
+  },
+  "required": [
+    "name",
+    "title"
+  ]
+}
