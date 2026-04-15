@@ -10,6 +10,13 @@ export default function AdminDashboard() {
   const [reviews, setReviews] = useState([]);
   const [loading, setLoading] = useState(true);
 
+  const getGreeting = () => {
+    const hour = new Date().getHours();
+    if (hour < 12) return "Good morning";
+    if (hour < 18) return "Good afternoon";
+    return "Good evening";
+  };
+
   useEffect(() => {
     Promise.all([
       base44.entities.Appointment.list("-date", 100),
@@ -35,17 +42,17 @@ export default function AdminDashboard() {
   ];
 
   const statusColors = {
-    pending: "bg-yellow-100 text-yellow-700",
-    confirmed: "bg-blue-100 text-blue-700",
-    completed: "bg-green-100 text-green-700",
-    cancelled: "bg-red-100 text-red-700",
-    no_show: "bg-gray-100 text-gray-700",
+    pending: "bg-amber-50 text-amber-700",
+    confirmed: "bg-sky-50 text-sky-700",
+    completed: "bg-emerald-50 text-emerald-700",
+    cancelled: "bg-red-50 text-red-700",
+    no_show: "bg-gray-50 text-gray-700",
   };
 
   return (
     <div>
       <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }}>
-        <h1 className="font-playfair text-3xl font-bold mb-1">Good morning ✨</h1>
+        <h1 className="font-playfair text-3xl font-bold mb-1">{getGreeting()} ✨</h1>
         <p className="text-muted-foreground mb-8">Here's what's happening today</p>
 
         {/* Stats */}

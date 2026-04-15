@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
-import { Search, Filter, CalendarCheck } from "lucide-react";
+import { Search, Filter, CalendarCheck, Download } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
@@ -8,11 +8,11 @@ import { base44 } from "@/api/base44Client";
 import { format, parseISO } from "date-fns";
 
 const STATUS_COLORS = {
-  pending: "bg-yellow-100 text-yellow-700 border-yellow-200",
-  confirmed: "bg-blue-100 text-blue-700 border-blue-200",
-  completed: "bg-green-100 text-green-700 border-green-200",
-  cancelled: "bg-red-100 text-red-700 border-red-200",
-  no_show: "bg-gray-100 text-gray-600 border-gray-200",
+  pending: "bg-amber-50 text-amber-700 border-amber-200",
+  confirmed: "bg-sky-50 text-sky-700 border-sky-200",
+  completed: "bg-emerald-50 text-emerald-700 border-emerald-200",
+  cancelled: "bg-red-50 text-red-700 border-red-200",
+  no_show: "bg-gray-50 text-gray-700 border-gray-200",
 };
 
 const STATUSES = ["all", "pending", "confirmed", "completed", "cancelled", "no_show"];
@@ -38,11 +38,29 @@ export default function AdminAppointments() {
     return matchStatus && matchSearch;
   });
 
+  const exportCSV = () => {
+    const headers = ["Client Name", "Email", "Phone", "Service", "Staff", "Date", "Time", "Price", "Status"];
+    const rows = filtered.map(a => [a.client_name, a.client_email, a.client_phone || "", a.service_name, a.staff_name, a.date, a.time_slot, a.price, a.status]);
+    const csv = [headers, ...rows].map(r => r.map(c => `"${c}"`).join(",")).join("\n");
+    const blob = new Blob([csv], { type: "text/csv;charset=utf-8;" });
+    const link = document.createElement("a");
+    link.href = URL.createObjectURL(blob);
+    link.download = `appointments-${new Date().toISOString().split("T")[0]}.csv`;
+    link.click();
+  };
+
   return (
     <div>
       <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }}>
-        <h1 className="font-playfair text-3xl font-bold mb-1">Appointments</h1>
-        <p className="text-muted-foreground mb-6">Manage all bookings</p>
+        <div className="flex justify-between items-start mb-6">
+          <div>
+            <h1 className="font-playfair text-3xl font-bold mb-1">Appointments</h1>
+            <p className="text-muted-foreground">Manage all bookings</p>
+          </div>
+          <Button onClick={exportCSV} variant="outline" className="rounded-full gap-2 border-pink-200 hover:bg-pink-50">
+            <Download className="w-4 h-4" /> Export CSV
+          </Button>
+        </div>
 
         {/* Filters */}
         <div className="flex flex-col sm:flex-row gap-3 mb-6">

@@ -7,12 +7,19 @@ import { Button } from "@/components/ui/button";
 import { base44 } from "@/api/base44Client";
 
 const CATEGORIES = ["All", "Nails", "Facials", "Lashes", "Brows", "Waxing", "Esthetics"];
+const SORTS = [
+  { label: "Name A–Z", value: "name_asc" },
+  { label: "Price Low–High", value: "price_asc" },
+  { label: "Price High–Low", value: "price_desc" },
+  { label: "Duration", value: "duration" },
+];
 
 export default function Services() {
   const [services, setServices] = useState([]);
   const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState("");
   const [activeCategory, setActiveCategory] = useState("All");
+  const [sortBy, setSortBy] = useState("name_asc");
   const location = useLocation();
 
   useEffect(() => {
@@ -29,6 +36,12 @@ export default function Services() {
     const matchCat = activeCategory === "All" || s.category === activeCategory;
     const matchSearch = !search || s.name.toLowerCase().includes(search.toLowerCase()) || s.description?.toLowerCase().includes(search.toLowerCase());
     return matchCat && matchSearch;
+  }).sort((a, b) => {
+    if (sortBy === "name_asc") return a.name.localeCompare(b.name);
+    if (sortBy === "price_asc") return a.price - b.price;
+    if (sortBy === "price_desc") return b.price - a.price;
+    if (sortBy === "duration") return a.duration_minutes - b.duration_minutes;
+    return 0;
   });
 
   return (
@@ -51,21 +64,32 @@ export default function Services() {
           />
         </div>
 
-        {/* Categories */}
-        <div className="flex gap-2 flex-wrap mb-8">
-          {CATEGORIES.map(cat => (
-            <button
-              key={cat}
-              onClick={() => setActiveCategory(cat)}
-              className={`px-5 py-2 rounded-full text-sm font-medium transition-all duration-200 ${
-                activeCategory === cat
-                  ? "gradient-pink text-white shadow-md"
-                  : "glass text-foreground/70 hover:text-foreground hover:bg-white/50"
-              }`}
-            >
-              {cat}
-            </button>
-          ))}
+        {/* Categories & Sort */}
+        <div className="flex gap-3 flex-wrap items-center mb-8">
+          <div className="flex gap-2 flex-wrap">
+            {CATEGORIES.map(cat => (
+              <button
+                key={cat}
+                onClick={() => setActiveCategory(cat)}
+                className={`px-5 py-2 rounded-full text-sm font-medium transition-all duration-200 ${
+                  activeCategory === cat
+                    ? "gradient-pink text-white shadow-md"
+                    : "glass text-foreground/70 hover:text-foreground hover:bg-white/50"
+                }`}
+              >
+                {cat}
+              </button>
+            ))}
+          </div>
+          <select
+            value={sortBy}
+            onChange={e => setSortBy(e.target.value)}
+            className="ml-auto px-4 py-2 rounded-full text-sm border border-pink-200 bg-white/70 text-foreground hover:bg-white/90 transition-all cursor-pointer"
+          >
+            {SORTS.map(s => (
+              <option key={s.value} value={s.value}>{s.label}</option>
+            ))}
+          </select>
         </div>
 
         {/* Services grid */}
